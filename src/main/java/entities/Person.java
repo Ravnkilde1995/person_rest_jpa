@@ -1,37 +1,46 @@
 package entities;
 
-import javax.persistence.Column;
+
+import java.io.Serializable;
+import java.util.Date;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Table;
-import java.sql.Date;
+import javax.persistence.NamedQuery;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 
 @Entity
-@Table(name = "person")
-public class Person {
+@NamedQuery(name = "Person.deleteAllRows", query = "DELETE from Person")
+public class Person implements Serializable {
+
+    private static final long serialVersionUID = 1L;
     @Id
-    @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "first_name", length = 30)
-    private String firstName;
+    String firstName;
+    String lastName;
+    String phone;
 
-    @Column(name = "last_name", length = 30)
-    private String lastName;
-
-    @Column(name = "phone", length = 25)
-    private String phone;
-
-    @Column(name = "created")
-    private Date created;
-
-    @Column(name = "last_edited")
-    private Date lastEdited;
+    @Temporal(TemporalType.DATE)
+    Date created;
+    @Temporal(TemporalType.DATE)
+    Date lastEdited;
 
     public Person() {
-
     }
+
+    public Person(String firstName, String lastName, String phone) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.phone = phone;
+        this.created = new Date();
+        this.lastEdited = new Date();
+    }
+
 
     public Long getId() {
         return id;
@@ -41,47 +50,12 @@ public class Person {
         this.id = id;
     }
 
+    public String getFirstName() {
+        return firstName;
+    }
 
-    public Person(Long id, String firstName, String lastName, String phone, Date created, Date lastEdited) {
-        this.id = id;
+    public void setFirstName(String firstName) {
         this.firstName = firstName;
-        this.lastName = lastName;
-        this.phone = phone;
-        this.created = created;
-        this.lastEdited = lastEdited;
-    }
-
-    public Person(String firstName, String lastName, String phone, Date created, Date lastEdited) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.phone = phone;
-        this.created = created;
-        this.lastEdited = lastEdited;
-    }
-
-
-    public Date getLastEdited() {
-        return lastEdited;
-    }
-
-    public void setLastEdited(Date lastEdited) {
-        this.lastEdited = lastEdited;
-    }
-
-    public Date getCreated() {
-        return created;
-    }
-
-    public void setCreated(Date created) {
-        this.created = created;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
     }
 
     public String getLastName() {
@@ -92,11 +66,29 @@ public class Person {
         this.lastName = lastName;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
+
+    public Date getCreated() {
+        return created;
+    }
+
+    public void setCreated(Date created) {
+        this.created = created;
+    }
+
+    public Date getLastEdited() {
+        return lastEdited;
+    }
+
+    public void setLastEdited(Date lastEdited) {
+        this.lastEdited = lastEdited;
+    }
+
+
 }

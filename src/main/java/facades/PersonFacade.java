@@ -1,27 +1,23 @@
 package facades;
 
+
 import dtos.PersonDTO;
 import dtos.PersonsDTO;
-import dtos.RenameMeDTO;
-import entities.RenameMe;
+import entities.Person;
 
+import java.util.Date;
+import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.TypedQuery;
 
-public class PersonFacade implements IPersonFacade{
-
+/**
+ * Rename Class to a relevant name Add add relevant facade methods
+ */
+public class PersonFacade implements IPersonFacade {
     private static PersonFacade instance;
     private static EntityManagerFactory emf;
 
-    //Private Constructor to ensure Singleton
-    private PersonFacade() {}
-
-
-    /**
-     *
-     * @param _emf
-     * @return an instance of this facade class.
-     */
     public static PersonFacade getPersonFacade(EntityManagerFactory _emf) {
         if (instance == null) {
             emf = _emf;
@@ -34,40 +30,77 @@ public class PersonFacade implements IPersonFacade{
         return emf.createEntityManager();
     }
 
-
-
     @Override
-    public PersonDTO addPerson(String fName, String lName, String phone) {
-        PersonDTO p = new PersonDTO(p.getFirstName(), p.getLastName());
-        EntityManager em = getEntityManager();
-        try {
-            em.getTransaction().begin();
-            em.persist(p);
-            em.getTransaction().commit();
-        } finally {
-            em.close();
-        }
-        //return new PersonDTO(p);
-        return null;
-    }
+    public PersonsDTO getAllPersons() {
+        EntityManager em = emf.createEntityManager();
+        TypedQuery<Person> query = em.createQuery("SELECT p FROM Person p", Person.class);
+        List<Person> persons = query.getResultList();
 
-    @Override
-    public PersonDTO deletePerson(int id) {
-        return null;
+        return new PersonsDTO(persons);
+
     }
 
     @Override
     public PersonDTO getPerson(int id) {
-        return null;
+        EntityManager em = emf.createEntityManager();
+        TypedQuery<Person> query = em.createQuery("SELECT p FROM Person p where p.id = :id", Person.class);
+        query.setParameter("id", id);
+        Person person = query.getSingleResult();
+
+        return new PersonDTO(person);
+
     }
 
     @Override
-    public PersonsDTO getAllPersons() {
-        return null;
+    public PersonDTO addPerson(String fName, String lName, String phone) {
+        EntityManager em = emf.createEntityManager();
+        Person person = new Person(fName, lName, phone);
+        em.getTransaction().begin();
+        em.persist(person);
+        em.getTransaction().commit();
+        em.close();
+
+        return new PersonDTO(person);
+    }
+
+    @Override
+    public PersonDTO deletePerson(long id) {
+        EntityManager em = emf.createEntityManager();
+        //Long idLong = Long.parseLong(id+"");
+        Person person = em.find(Person.class, id);
+        //if(person == null ){
+        //    throw new Exception("No person matches the id");
+        //}
+        try {
+            em.getTransaction().begin();
+            em.remove(person);
+            em.getTransaction().commit();
+
+            return new PersonDTO(person);
+
+        } finally {
+            em.close();
+        }
     }
 
     @Override
     public PersonDTO editPerson(PersonDTO p) {
-        return null;
+        EntityManager em = emf.createEntityManager();
+        Person person = em.find(Person.class, p.getId());
+
+        try {
+            em.getTransaction().begin();
+            person.setFirstName(p.getfName());
+            person.setLastName(p.getlName());
+            person.setPhone(p.getPhone());
+            person.setLastEdited(new Date());
+            em.getTransaction().commit();
+
+            return new PersonDTO(person);
+
+        } finally {
+            em.close();
+        }
     }
+
 }

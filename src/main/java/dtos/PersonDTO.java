@@ -1,77 +1,60 @@
 package dtos;
 
 
-import java.io.Serializable;
-import java.sql.Date;
-import java.util.Objects;
+import entities.Person;
 
-public class PersonDTO implements Serializable {
-    private final Long id;
-    private final String firstName;
-    private final String lastName;
-    private final String phone;
-    private final Date created;
-    private final Date lastEdited;
 
-    public PersonDTO(Long id, String firstName, String lastName, String phone, Date created, Date lastEdited) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.phone = phone;
-        this.created = created;
-        this.lastEdited = lastEdited;
+public class PersonDTO {
+    private long id;
+    private String fName;
+    private String lName;
+    private String phone;
+
+    public PersonDTO(Person p) {
+        this.fName = p.getFirstName();
+        this.lName = p.getLastName();
+        this.phone = p.getPhone();
+        this.id = p.getId();
     }
 
-    public Long getId() {
+    public PersonDTO(String fn, String ln, String phone) {
+        this.fName = fn;
+        this.lName = ln;
+        this.phone = phone;
+    }
+
+    public PersonDTO() {
+    }
+    // getters setters hashcode and equals
+
+    public long getId() {
         return id;
     }
 
-    public String getFirstName() {
-        return firstName;
+
+    public String getfName() {
+        return fName;
     }
 
-    public String getLastName() {
-        return lastName;
+    public void setfName(String fName) {
+        this.fName = fName;
+    }
+
+    public String getlName() {
+        return lName;
+    }
+
+    public void setlName(String lName) {
+        this.lName = lName;
     }
 
     public String getPhone() {
         return phone;
     }
 
-    public Date getCreated() {
-        return created;
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
-    public Date getLastEdited() {
-        return lastEdited;
-    }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        PersonDTO entity = (PersonDTO) o;
-        return Objects.equals(this.id, entity.id) &&
-                Objects.equals(this.firstName, entity.firstName) &&
-                Objects.equals(this.lastName, entity.lastName) &&
-                Objects.equals(this.phone, entity.phone) &&
-                Objects.equals(this.created, entity.created) &&
-                Objects.equals(this.lastEdited, entity.lastEdited);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, firstName, lastName, phone, created, lastEdited);
-    }
-
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + "(" +
-                "id = " + id + ", " +
-                "firstName = " + firstName + ", " +
-                "lastName = " + lastName + ", " +
-                "phone = " + phone + ", " +
-                "created = " + created + ", " +
-                "lastEdited = " + lastEdited + ")";
-    }
 }
